@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('line_users', function (Blueprint $table) {
             $table->ulid('id')->primary();
-            $table->foreignUlid('user_id')->nullable()->constrained();
+            $table->foreignUlid('emp_id')->nullable()->constrained('users');
             $table->string('display_name'); // displayName
             $table->string('user_id'); // userId
             $table->string('picture_url'); // pictureUrl
