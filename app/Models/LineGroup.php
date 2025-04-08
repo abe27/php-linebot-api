@@ -7,17 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
-class LineBot extends Model
+class LineGroup extends Model
 {
     use HasFactory, Notifiable, HasUlids;
 
     protected $fillable = [
-        'line_user_id',
-        'message_source',
-        'line_group_id',
-        'message_type',
-        'message',
-        'reply_token',
-        'is_replyed',
+        'group_id',
+        'name',
+        'description',
+        'is_active',
     ];
 }

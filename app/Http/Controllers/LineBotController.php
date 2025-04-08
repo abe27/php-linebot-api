@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Customs\GetUserLineProfile;
 use App\Models\LineBot;
+use App\Models\LineUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use LINE\Clients\MessagingApi\Model\ReplyMessageRequest;
@@ -33,7 +34,8 @@ class LineBotController extends Controller
      */
     public function store(Request $request)
     {
-        $destination = $request['destination'];
+        Log::info($request);
+        // $destination = $request['destination'];
         $client = new \GuzzleHttp\Client();
         $config = new \LINE\Clients\MessagingApi\Configuration();
         $config->setAccessToken(env('LINE_CHANNEL_ACCESS_TOKEN'));
@@ -46,11 +48,17 @@ class LineBotController extends Controller
             $msgType = $event['message']['type'];
             if ($msgType == 'text') {
                 $requestTxt = $event['message']['text'];
-                $userId = $event['source']['userId'];
-                $profile = $messagingApi->getProfile($userId);
-                Log::info($profile);
+                $userId = $messagingApi->getProfile($event['source']['userId']);
+                ### Create Profile User ###
+                $profile = LineUser::updateOrcreate(['user_id' => $userId['userId']], [
+                    'display_name' => $userId['displayName'],
+                    'picture_url' => $userId['pictureUrl'],
+                    'status_message' => $userId['statusMessage'],
+                    'language' => $userId['language'],
+                ]);
+                ###########################
                 $replyToken = $event['replyToken'];
-                $message = new TextMessage(['type' => 'text', 'text' => 'hello! ' . $profile['displayName']]);
+                $message = new TextMessage(['type' => 'text', 'text' => 'hello! ' . $profile->display_name]);
                 $request = new ReplyMessageRequest([
                     'replyToken' => $replyToken,
                     'messages' => [$message],

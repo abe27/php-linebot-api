@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('line_bots', function (Blueprint $table) {
-            $table->id();
+        Schema::create('line_groups', function (Blueprint $table) {
+            $table->ulid('id')->primary();
+            $table->string('group_id')->unique();
+            $table->string('name');
+            $table->longText('description')->nullable();
+            $table->boolean('is_active')->nullable()->default(true);
             $table->timestamps();
         });
     }
@@ -22,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('line_bots');
+        Schema::dropIfExists('line_groups');
     }
 };

@@ -12,7 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('line_bots', function (Blueprint $table) {
-            $table->id();
+            $table->ulid('id')->primary();
+            $table->foreignUlid('line_user_id')->constrained();
+            $table->string('message_source'); // group,user
+            $table->foreignUlid('line_group_id')->nullable()->constrained();
+            $table->string('message_type');
+            $table->string('message');
+            $table->string('reply_token');
+            $table->boolean('is_replyed')->nullable()->default(false);
             $table->timestamps();
         });
     }

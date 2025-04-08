@@ -7,17 +7,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
-class LineBot extends Model
+class LineUser extends Model
 {
     use HasFactory, Notifiable, HasUlids;
 
     protected $fillable = [
-        'line_user_id',
-        'message_source',
-        'line_group_id',
-        'message_type',
-        'message',
-        'reply_token',
-        'is_replyed',
+        'user_id',
+        'display_name',
+        'user_id',
+        'picture_url',
+        'status_message',
+        'language',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
