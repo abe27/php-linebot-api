@@ -12,7 +12,7 @@ class LineUser extends Model
     use HasFactory, Notifiable, HasUlids;
 
     protected $fillable = [
-        'user_id',
+        'emp_id',
         'display_name',
         'user_id',
         'picture_url',

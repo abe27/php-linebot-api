@@ -58,7 +58,10 @@ class LineBotController extends Controller
                 ]);
                 ###########################
                 $replyToken = $event['replyToken'];
-                $message = new TextMessage(['type' => 'text', 'text' => 'hello! ' . $profile->display_name]);
+                $message = new TextMessage(['type' => 'text', 'text' => 'สวัสดีครับคนไม่รู้จัก!']);
+                if ($profile) {
+                    $message = new TextMessage(['type' => 'text', 'text' => 'สวัสดีครับ ! ' . $profile->display_name]);
+                }
                 $request = new ReplyMessageRequest([
                     'replyToken' => $replyToken,
                     'messages' => [$message],
