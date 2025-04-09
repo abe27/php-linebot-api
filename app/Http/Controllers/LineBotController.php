@@ -66,6 +66,8 @@ class LineBotController extends Controller
                     if ($lineMsg > 0) {
                         $txtMsg = "สวัสดีครับอีกครั้ง ";
                     }
+
+                    ####### Step. 2 Reply Message ########
                     $message = new TextMessage(['type' => 'text', 'text' => $txtMsg . $profile->display_name . "\nไม่ทราบต้องการให้ช่วยเหลืออะไรครับ"]);
                     // Log::info($event['source']['type']);
                     ############ Create Chat History ##############
