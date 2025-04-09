@@ -34,7 +34,7 @@ class LineBotController extends Controller
      */
     public function store(Request $request)
     {
-        Log::info($request);
+        // Log::info($request);
         // $destination = $request['destination'];
         $client = new \GuzzleHttp\Client();
         $config = new \LINE\Clients\MessagingApi\Configuration();
@@ -48,20 +48,44 @@ class LineBotController extends Controller
             $msgType = $event['message']['type'];
             if ($msgType == 'text') {
                 $requestTxt = $event['message']['text'];
-                $userId = $messagingApi->getProfile($event['source']['userId']);
-                ### Create Profile User ###
-                $profile = LineUser::updateOrcreate(['user_id' => $userId['userId']], [
-                    'display_name' => $userId['displayName'],
-                    'picture_url' => $userId['pictureUrl'],
-                    'status_message' => $userId['statusMessage'],
-                    'language' => $userId['language'],
-                ]);
-                ###########################
                 $replyToken = $event['replyToken'];
                 $message = new TextMessage(['type' => 'text', 'text' => 'สวัสดีครับคนไม่รู้จัก!']);
-                if ($profile) {
-                    $message = new TextMessage(['type' => 'text', 'text' => 'สวัสดีครับ ! ' . $profile->display_name]);
+                ### Create Profile User ###
+                $userId = $messagingApi->getProfile($event['source']['userId']);
+                if ($userId) {
+                    $profile = LineUser::updateOrcreate(['user_id' => $userId['userId']], [
+                        'display_name' => $userId['displayName'],
+                        'picture_url' => $userId['pictureUrl'],
+                        'status_message' => $userId['statusMessage'],
+                        'language' => $userId['language'],
+                    ]);
+                    ######### Step 1 #########
+                    // Log::info($profile);
+                    $lineMsg = LineBot::where('handle_date', now())->where('line_user_id', $profile->id)->count();
+                    $txtMsg = "สวัสดีครับ !";
+                    if ($lineMsg > 0) {
+                        $txtMsg = "สวัสดีครับอีกครั้ง ";
+                    }
+                    $message = new TextMessage(['type' => 'text', 'text' => $txtMsg . $profile->display_name . "\nไม่ทราบต้องการให้ช่วยเหลืออะไรครับ"]);
+                    // Log::info($event['source']['type']);
+                    ############ Create Chat History ##############
+                    LineBot::create([
+                        'handle_date' => now(),
+                        'line_user_id' => $profile->id,
+                        'message_source' => $event['source']['type'],
+                        'message_type' => $msgType,
+                        'message' => $requestTxt,
+                        'reply_token' => $replyToken,
+                        'is_replyed' => true
+                    ]);
+
+                    // // if ($event['source']['type'] == 'group') {
+                    //     'type' => 'group',
+                    //     'groupId' => 'C2d998b3e5f3edcd2b388c1eae277fd91',
+                    //     'userId' => 'U25a9314f7c1de4ac983b70fbf8bb5072',
+                    // // }
                 }
+                ###########################
                 $request = new ReplyMessageRequest([
                     'replyToken' => $replyToken,
                     'messages' => [$message],

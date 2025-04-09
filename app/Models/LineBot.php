@@ -12,6 +12,7 @@ class LineBot extends Model
     use HasFactory, Notifiable, HasUlids;
 
     protected $fillable = [
+        'handle_date',
         'line_user_id',
         'message_source',
         'line_group_id',

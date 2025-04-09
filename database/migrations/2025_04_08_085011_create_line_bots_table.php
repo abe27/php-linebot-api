@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('line_bots', function (Blueprint $table) {
             $table->ulid('id')->primary();
+            $table->date('handle_date')->nullable()->default(now());
             $table->foreignUlid('line_user_id')->constrained();
             $table->string('message_source'); // group,user
             $table->foreignUlid('line_group_id')->nullable()->constrained();
