@@ -107,13 +107,15 @@ class LineBotController extends Controller
                     // // }
                 }
                 ###########################
-                $request = new ReplyMessageRequest([
-                    'replyToken' => $replyToken,
-                    'messages' => [$message],
-                ]);
-                $response = $messagingApi->replyMessage($request);
-                $lineReply->is_replyed = true;
-                $lineReply->save();
+                if ($event['source']['type'] == 'user') {
+                    $request = new ReplyMessageRequest([
+                        'replyToken' => $replyToken,
+                        'messages' => [$message],
+                    ]);
+                    $response = $messagingApi->replyMessage($request);
+                    $lineReply->is_replyed = true;
+                    $lineReply->save();
+                }
                 // if ($lineMsg < 1) {
                 //     $request = new ReplyMessageRequest([
                 //         'replyToken' => $replyToken,
