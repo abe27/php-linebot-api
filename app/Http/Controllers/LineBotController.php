@@ -108,57 +108,58 @@ class LineBotController extends Controller
                     // // }
                 }
                 ###########################
-                if ($event['source']['type'] == 'user') {
-                    $isReply = true;
-                    switch (Str::lower($requestTxt)) {
-                        case "yes":
-                            $message = new TextMessage([
-                                'type' => 'text',
-                                'text' => "คุณ" . $profile->display_name . "\nกรูณาเลือกรายการช่วยเหลือ",
-                                "quickReply" => [
-                                    "items" => [
-                                        [
-                                            "type" => "action",
-                                            // "imageUrl" => "https://www.cryptologos.cc/logos/tron-trx-logo.png",
-                                            "action" => [
-                                                "type" => "message",
-                                                "label" => "อัพเดท Stock",
-                                                "text" => "UpdateStock"
-                                            ]
-                                        ],
-                                        [
-                                            "type" => "action",
-                                            // "imageUrl" => "https://www.cryptologos.cc/logos/tron-trx-logo.png",
-                                            "action" => [
-                                                "type" => "message",
-                                                "label" => "ไม่! ขอบคุณ",
-                                                "text" => "No"
-                                            ]
+                // if ($event['source']['type'] == 'user') {
+
+                // }
+                $isReply = true;
+                switch (Str::lower($requestTxt)) {
+                    case "yes":
+                        $message = new TextMessage([
+                            'type' => 'text',
+                            'text' => "คุณ" . $profile->display_name . "\nกรูณาเลือกรายการช่วยเหลือ",
+                            "quickReply" => [
+                                "items" => [
+                                    [
+                                        "type" => "action",
+                                        // "imageUrl" => "https://www.cryptologos.cc/logos/tron-trx-logo.png",
+                                        "action" => [
+                                            "type" => "message",
+                                            "label" => "อัพเดท Stock",
+                                            "text" => "UpdateStock"
+                                        ]
+                                    ],
+                                    [
+                                        "type" => "action",
+                                        // "imageUrl" => "https://www.cryptologos.cc/logos/tron-trx-logo.png",
+                                        "action" => [
+                                            "type" => "message",
+                                            "label" => "ไม่! ขอบคุณ",
+                                            "text" => "No"
                                         ]
                                     ]
                                 ]
-                            ]);
-                            break;
-                        case 'no':
-                            $message = new TextMessage([
-                                'type' => 'text',
-                                'text' => "งั้นขอจบบทสนทนาเพียงแค่นี้\nสบายดีคุณ " . $profile->display_name . "",
-                            ]);
-                            break;
-                        default:
-                            $isReply = false;
-                            break;
-                    }
+                            ]
+                        ]);
+                        break;
+                    case 'no':
+                        $message = new TextMessage([
+                            'type' => 'text',
+                            'text' => "งั้นขอจบบทสนทนาเพียงแค่นี้\nสบายดีคุณ " . $profile->display_name . "",
+                        ]);
+                        break;
+                    default:
+                        $isReply = false;
+                        break;
+                }
 
-                    $request = new ReplyMessageRequest([
-                        'replyToken' => $replyToken,
-                        'messages' => [$message],
-                    ]);
-                    if ($isReply) {
-                        $response = $messagingApi->replyMessage($request);
-                        $lineReply->is_replyed = true;
-                        $lineReply->save();
-                    }
+                $request = new ReplyMessageRequest([
+                    'replyToken' => $replyToken,
+                    'messages' => [$message],
+                ]);
+                if ($isReply) {
+                    $response = $messagingApi->replyMessage($request);
+                    $lineReply->is_replyed = true;
+                    $lineReply->save();
                 }
             }
         }
