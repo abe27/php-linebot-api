@@ -229,31 +229,7 @@ class LineBotController extends Controller
                     case "400":
                         #### Call Thread #####
                         try {
-                            $txtCmd = "";
-                            switch ($requestTxt) {
-                                case "001":
-                                    $txtCmd = "/home/vcst/anaconda3/envs/odoo17/bin/python /home/vcst/script_autorun/cal_001.py";
-                                    break;
-                                case "002":
-                                    $txtCmd = "/home/vcst/anaconda3/envs/odoo17/bin/python /home/vcst/script_autorun/cal_002.py";
-                                    break;
-                                case "003":
-                                    $txtCmd = "/home/vcst/anaconda3/envs/odoo17/bin/python /home/vcst/script_autorun/cal_003.py";
-                                    break;
-                                case "005":
-                                    $txtCmd = "/home/vcst/anaconda3/envs/odoo17/bin/python /home/vcst/script_autorun/cal_005.py";
-                                    break;
-                                case "008":
-                                    $txtCmd = "/home/vcst/anaconda3/envs/odoo17/bin/python /home/vcst/script_autorun/cal_008.py";
-                                    break;
-                                case "011":
-                                    $txtCmd = "/home/vcst/anaconda3/envs/odoo17/bin/python /home/vcst/script_autorun/cal_011.py";
-                                    break;
-                                case "400":
-                                    $txtCmd = "/home/vcst/anaconda3/envs/odoo17/bin/python /home/vcst/script_autorun/cal_400.py";
-                                    break;
-                            }
-                            $result = Process::run($txtCmd);
+                            $result = Process::run('cd ..&&php artisan update:stock ' . $requestTxt . '');
                             if ($result->successful()) {
                                 $message = new TextMessage([
                                     'type' => 'text',
@@ -261,7 +237,7 @@ class LineBotController extends Controller
                                 ]);
                             }
 
-                            // $result->successful();
+                            //                             $result->successful();
                             // $result->failed();
                             // $result->exitCode();
                             // $result->output();
