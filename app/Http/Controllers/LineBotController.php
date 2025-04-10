@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Cutoms\UpdateStock;
 use App\Models\LineBot;
 use App\Models\LineUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Str;
-use LINE\Clients\MessagingApi\Model\PushMessageRequest;
 use LINE\Clients\MessagingApi\Model\ReplyMessageRequest;
 use LINE\Clients\MessagingApi\Model\TextMessage;
 
@@ -145,6 +146,99 @@ class LineBotController extends Controller
                             'type' => 'text',
                             'text' => "งั้นขอจบบทสนทนาเพียงแค่นี้\nสบายดีคุณ " . $profile->display_name . "",
                         ]);
+                        break;
+                    case 'updatestock':
+                        $message = new TextMessage([
+                            'type' => 'text',
+                            'text' => "คุณ" . $profile->display_name . "\nกรูณาเลือกคลังด้วย",
+                            "quickReply" => [
+                                "items" => [
+                                    [
+                                        "type" => "action",
+                                        // "imageUrl" => "https://www.cryptologos.cc/logos/tron-trx-logo.png",
+                                        "action" => [
+                                            "type" => "message",
+                                            "label" => "คลัง 001",
+                                            "text" => "001"
+                                        ]
+                                    ],
+                                    [
+                                        "type" => "action",
+                                        // "imageUrl" => "https://www.cryptologos.cc/logos/tron-trx-logo.png",
+                                        "action" => [
+                                            "type" => "message",
+                                            "label" => "คลัง 002",
+                                            "text" => "002"
+                                        ]
+                                    ],
+                                    [
+                                        "type" => "action",
+                                        // "imageUrl" => "https://www.cryptologos.cc/logos/tron-trx-logo.png",
+                                        "action" => [
+                                            "type" => "message",
+                                            "label" => "คลัง 003",
+                                            "text" => "003"
+                                        ]
+                                    ],
+                                    [
+                                        "type" => "action",
+                                        // "imageUrl" => "https://www.cryptologos.cc/logos/tron-trx-logo.png",
+                                        "action" => [
+                                            "type" => "message",
+                                            "label" => "คลัง 005",
+                                            "text" => "005"
+                                        ]
+                                    ],
+                                    [
+                                        "type" => "action",
+                                        // "imageUrl" => "https://www.cryptologos.cc/logos/tron-trx-logo.png",
+                                        "action" => [
+                                            "type" => "message",
+                                            "label" => "คลัง 008",
+                                            "text" => "008"
+                                        ]
+                                    ],
+                                    [
+                                        "type" => "action",
+                                        // "imageUrl" => "https://www.cryptologos.cc/logos/tron-trx-logo.png",
+                                        "action" => [
+                                            "type" => "message",
+                                            "label" => "คลัง 011",
+                                            "text" => "011"
+                                        ]
+                                    ],
+                                    [
+                                        "type" => "action",
+                                        // "imageUrl" => "https://www.cryptologos.cc/logos/tron-trx-logo.png",
+                                        "action" => [
+                                            "type" => "message",
+                                            "label" => "คลัง 400",
+                                            "text" => "400"
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]);
+                        break;
+                    case "001":
+                    case "002":
+                    case "003":
+                    case "005":
+                    case "008":
+                    case "011":
+                    case "400":
+                        #### Call Thread #####
+                        try {
+                            $result = Process::run('cd ..&&php artisan update:stock ' . $requestTxt . '');
+                            if ($result->successful()) {
+                                $message = new TextMessage([
+                                    'type' => 'text',
+                                    'text' => "คุณ " . $profile->display_name . "\nขณะนี้ระบบ ทำการอัพเดทคลัง " . $requestTxt . "\nเรียบร้อยแล้ว",
+                                ]);
+                            }
+                        } catch (\Exception $e) {
+                            Log::error($e->getMessage());
+                        }
                         break;
                     default:
                         $isReply = false;
