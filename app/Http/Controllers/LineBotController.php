@@ -237,8 +237,12 @@ class LineBotController extends Controller
                                 ]);
                             }
 
-                            //                             $result->successful();
-                            // $result->failed();
+                            if ($result->failed()) {
+                                $message = new TextMessage([
+                                    'type' => 'text',
+                                    'text' => "คุณ " . $profile->display_name . "\nเกิดข้อผิดพลาขณะนี้ระบบ ทำการอัพเดทคลัง " . $requestTxt . "",
+                                ]);
+                            }
                             // $result->exitCode();
                             // $result->output();
                             // $result->errorOutput();
