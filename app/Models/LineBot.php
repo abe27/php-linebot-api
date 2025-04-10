@@ -21,4 +21,13 @@ class LineBot extends Model
         'reply_token',
         'is_replyed',
     ];
+
+    protected $casts = [
+        'is_replyed' => 'boolean'
+    ];
+
+    public function line_user()
+    {
+        return $this->belongsTo(LineUser::class);
+    }
 }

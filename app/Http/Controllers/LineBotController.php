@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Customs\GetUserLineProfile;
 use App\Models\LineBot;
 use App\Models\LineUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use LINE\Clients\MessagingApi\Model\PushMessageRequest;
 use LINE\Clients\MessagingApi\Model\ReplyMessageRequest;
 use LINE\Clients\MessagingApi\Model\TextMessage;
-use LINE\Clients\MessagingApi\Model\UserProfileResponse;
 
 class LineBotController extends Controller
 {
@@ -63,13 +62,33 @@ class LineBotController extends Controller
                     // Log::info($profile);
                     $lineMsg = LineBot::where('handle_date', now())->where('line_user_id', $profile->id)->count();
                     $txtMsg = "สวัสดีครับ !";
-                    if ($lineMsg > 0) {
-                        $txtMsg = "สวัสดีครับอีกครั้ง ";
-                    }
-
                     ####### Step. 2 Reply Message ########
-                    $message = new TextMessage(['type' => 'text', 'text' => $txtMsg . $profile->display_name . "\nไม่ทราบต้องการให้ช่วยเหลืออะไรครับ"]);
-                    Log::info($event['source']['type'] == 'user');
+                    $message = new TextMessage([
+                        'type' => 'text',
+                        'text' => $txtMsg . "คุณ" . $profile->display_name . "\nใช่หรือไม่",
+                        'quickReply' => [
+                            "items" => [
+                                [
+                                    "type" => "action",
+                                    // "imageUrl" => "https://www.cryptologos.cc/logos/tron-trx-logo.png",
+                                    "action" => [
+                                        "type" => "message",
+                                        "label" => "ใช่",
+                                        "text" => "👌 Yes"
+                                    ]
+                                ],
+                                [
+                                    "type" => "action",
+                                    // "imageUrl" => "https://www.cryptologos.cc/logos/tron-trx-logo.png",
+                                    "action" => [
+                                        "type" => "message",
+                                        "label" => "ไม่! ขอบคุณ",
+                                        "text" => "No"
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]);
                     ############ Create Chat History ##############
                     $lineReply = LineBot::create([
                         'handle_date' => now(),
@@ -88,15 +107,29 @@ class LineBotController extends Controller
                     // // }
                 }
                 ###########################
-                if ($lineMsg < 3) {
-                    $request = new ReplyMessageRequest([
-                        'replyToken' => $replyToken,
-                        'messages' => [$message],
-                    ]);
-                    $response = $messagingApi->replyMessage($request);
-                    $lineReply->is_replyed = true;
-                    $lineReply->save();
-                }
+                $request = new ReplyMessageRequest([
+                    'replyToken' => $replyToken,
+                    'messages' => [$message],
+                ]);
+                $response = $messagingApi->replyMessage($request);
+                $lineReply->is_replyed = true;
+                $lineReply->save();
+                // if ($lineMsg < 1) {
+                //     $request = new ReplyMessageRequest([
+                //         'replyToken' => $replyToken,
+                //         'messages' => [$message],
+                //     ]);
+                //     $response = $messagingApi->replyMessage($request);
+                //     $lineReply->is_replyed = true;
+                //     $lineReply->save();
+                // } else {
+                //     $message = new TextMessage(['type' => 'text', 'text' => "กรุณาเลือกรายการที่" . $profile->display_name . "\nไม่ทราบต้องการให้ช่วยเหลืออะไรครับ"]);
+                //     $request = new PushMessageRequest([
+                //         'to' => $profile->user_id,
+                //         'messages' => [$message],
+                //     ]);
+                //     $response = $messagingApi->pushMessage($request);
+                // }
             }
         }
         // {
