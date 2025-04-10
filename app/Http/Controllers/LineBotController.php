@@ -108,12 +108,11 @@ class LineBotController extends Controller
                     // // }
                 }
                 ###########################
-                // if ($event['source']['type'] == 'user') {
-
-                // }
+                Log::info($requestTxt);
                 $isReply = true;
                 switch (Str::lower($requestTxt)) {
                     case "yes":
+                    case "bot":
                         $message = new TextMessage([
                             'type' => 'text',
                             'text' => "คุณ" . $profile->display_name . "\nกรูณาเลือกรายการช่วยเหลือ",
