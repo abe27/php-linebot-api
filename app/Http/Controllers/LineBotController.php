@@ -88,11 +88,13 @@ class LineBotController extends Controller
                     // // }
                 }
                 ###########################
-                $request = new ReplyMessageRequest([
-                    'replyToken' => $replyToken,
-                    'messages' => [$message],
-                ]);
-                $response = $messagingApi->replyMessage($request);
+                if ($lineMsg < 3) {
+                    $request = new ReplyMessageRequest([
+                        'replyToken' => $replyToken,
+                        'messages' => [$message],
+                    ]);
+                    $response = $messagingApi->replyMessage($request);
+                }
             }
         }
         // {
