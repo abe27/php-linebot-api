@@ -69,16 +69,16 @@ class LineBotController extends Controller
 
                     ####### Step. 2 Reply Message ########
                     $message = new TextMessage(['type' => 'text', 'text' => $txtMsg . $profile->display_name . "\nไม่ทราบต้องการให้ช่วยเหลืออะไรครับ"]);
-                    // Log::info($event['source']['type']);
+                    Log::info($event['source']['type'] == 'user');
                     ############ Create Chat History ##############
-                    LineBot::create([
+                    $lineReply = LineBot::create([
                         'handle_date' => now(),
                         'line_user_id' => $profile->id,
                         'message_source' => $event['source']['type'],
                         'message_type' => $msgType,
                         'message' => $requestTxt,
                         'reply_token' => $replyToken,
-                        'is_replyed' => true
+                        'is_replyed' => false
                     ]);
 
                     // // if ($event['source']['type'] == 'group') {
@@ -94,6 +94,8 @@ class LineBotController extends Controller
                         'messages' => [$message],
                     ]);
                     $response = $messagingApi->replyMessage($request);
+                    $lineReply->is_replyed = true;
+                    $lineReply->save();
                 }
             }
         }
