@@ -236,6 +236,12 @@ class LineBotController extends Controller
                                     'text' => "คุณ " . $profile->display_name . "\nขณะนี้ระบบ ทำการอัพเดทคลัง " . $requestTxt . "\nเรียบร้อยแล้ว",
                                 ]);
                             }
+
+                            // $result->successful();
+                            // $result->failed();
+                            // $result->exitCode();
+                            // $result->output();
+                            // $result->errorOutput();
                         } catch (\Exception $e) {
                             Log::error($e->getMessage());
                         }
