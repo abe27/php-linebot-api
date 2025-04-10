@@ -6,6 +6,7 @@ use App\Models\LineBot;
 use App\Models\LineUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use LINE\Clients\MessagingApi\Model\PushMessageRequest;
 use LINE\Clients\MessagingApi\Model\ReplyMessageRequest;
 use LINE\Clients\MessagingApi\Model\TextMessage;
@@ -74,7 +75,7 @@ class LineBotController extends Controller
                                     "action" => [
                                         "type" => "message",
                                         "label" => "ใช่",
-                                        "text" => "👌 Yes"
+                                        "text" => "Yes"
                                     ]
                                 ],
                                 [
@@ -108,30 +109,57 @@ class LineBotController extends Controller
                 }
                 ###########################
                 if ($event['source']['type'] == 'user') {
+                    $isReply = true;
+                    switch (Str::lower($requestTxt)) {
+                        case "yes":
+                            $message = new TextMessage([
+                                'type' => 'text',
+                                'text' => "คุณ" . $profile->display_name . "\nกรูณาเลือกรายการช่วยเหลือ",
+                                "quickReply" => [
+                                    "items" => [
+                                        [
+                                            "type" => "action",
+                                            // "imageUrl" => "https://www.cryptologos.cc/logos/tron-trx-logo.png",
+                                            "action" => [
+                                                "type" => "message",
+                                                "label" => "อัพเดท Stock",
+                                                "text" => "UpdateStock"
+                                            ]
+                                        ],
+                                        [
+                                            "type" => "action",
+                                            // "imageUrl" => "https://www.cryptologos.cc/logos/tron-trx-logo.png",
+                                            "action" => [
+                                                "type" => "message",
+                                                "label" => "ไม่! ขอบคุณ",
+                                                "text" => "No"
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]);
+                            break;
+                        case 'no':
+                            $message = new TextMessage([
+                                'type' => 'text',
+                                'text' => "งั้นขอจบบทสนทนาเพียงแค่นี้\nสบายดีคุณ " . $profile->display_name . "",
+                            ]);
+                            break;
+                        default:
+                            $isReply = false;
+                            break;
+                    }
+
                     $request = new ReplyMessageRequest([
                         'replyToken' => $replyToken,
                         'messages' => [$message],
                     ]);
-                    $response = $messagingApi->replyMessage($request);
-                    $lineReply->is_replyed = true;
-                    $lineReply->save();
+                    if ($isReply) {
+                        $response = $messagingApi->replyMessage($request);
+                        $lineReply->is_replyed = true;
+                        $lineReply->save();
+                    }
                 }
-                // if ($lineMsg < 1) {
-                //     $request = new ReplyMessageRequest([
-                //         'replyToken' => $replyToken,
-                //         'messages' => [$message],
-                //     ]);
-                //     $response = $messagingApi->replyMessage($request);
-                //     $lineReply->is_replyed = true;
-                //     $lineReply->save();
-                // } else {
-                //     $message = new TextMessage(['type' => 'text', 'text' => "กรุณาเลือกรายการที่" . $profile->display_name . "\nไม่ทราบต้องการให้ช่วยเหลืออะไรครับ"]);
-                //     $request = new PushMessageRequest([
-                //         'to' => $profile->user_id,
-                //         'messages' => [$message],
-                //     ]);
-                //     $response = $messagingApi->pushMessage($request);
-                // }
             }
         }
         // {
