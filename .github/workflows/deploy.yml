@@ -8,7 +8,7 @@ on:
 
 jobs:
   forecasts-deployment:
-    runs-on: forecasts_hosted
+    runs-on: lineapi-runner
     steps:
       - name: Depoly
         working-directory: /var/www/html/linebot-api
