@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use LINE\Clients\MessagingApi\Model\CarouselTemplate;
 use LINE\Clients\MessagingApi\Model\PushMessageRequest;
-use LINE\Clients\MessagingApi\Model\TextMessage;
 
 class PushMessage extends Command
 {
@@ -35,28 +35,86 @@ class PushMessage extends Command
             config: $config,
         );
 
-        $message = new TextMessage([
+        $user = $messagingApi->getProfile('U7620f077b8d1218be94d27211729be5a');
+        $message = new CarouselTemplate([
             'type' => 'template',
             "altText" => "this is a buttons template",
             "template" => [
-                "type" => "buttons",
-                "title" => "Title",
-                "text" => "Text",
-                "actions" => [
+                "type" => "carousel",
+                "imageAspectRatio" => "square",
+                "columns" => [
                     [
-                        "type" => "message",
-                        "label" => "Action 1",
-                        "text" => "Action 1"
+                        "title" => "ประเภท 1",
+                        "text" => "อัพเดทสินค้าสำเร็จรูป",
+                        "actions" => [
+                            [
+                                "type" => "message",
+                                "label" => "อัพเดทเลย",
+                                "text" => "Yes1"
+                            ],
+                            [
+                                "type" => "message",
+                                "label" => "ยกเลิก",
+                                "text" => "Cancel"
+                            ]
+                        ],
+                        "thumbnailImageUrl" => "",
+                        "imageBackgroundColor" => null
                     ],
                     [
-                        "type" => "message",
-                        "label" => "Action 2",
-                        "text" => "Action 2"
+                        "title" => "ประเภท 5",
+                        "text" => "อัพเดทสินค้ากึ่งสำเร็จรูป",
+                        "actions" => [
+                            [
+                                "type" => "message",
+                                "label" => "อัพเดทเลย",
+                                "text" => "Yes5"
+                            ],
+                            [
+                                "type" => "message",
+                                "label" => "ยกเลิก",
+                                "text" => "Cancel"
+                            ]
+                        ],
+                        "thumbnailImageUrl" => "",
+                        "imageBackgroundColor" => null
+                    ],
+                    [
+                        "title" => "ประเภท 9",
+                        "text" => "อัพเดทวัสดุประกอบ",
+                        "actions" => [
+                            [
+                                "type" => "message",
+                                "label" => "อัพเดทเลย",
+                                "text" => "Yes9"
+                            ],
+                            [
+                                "type" => "message",
+                                "label" => "ยกเลิก",
+                                "text" => "Cancel"
+                            ]
+                        ],
+                        "thumbnailImageUrl" => "",
+                        "imageBackgroundColor" => null
                     ]
                 ]
+                // "type" => "buttons",
+                // "title" => "Title",
+                // "text" => "Text",
+                // "actions" => [
+                //     [
+                //         "type" => "message",
+                //         "label" => "Action 1",
+                //         "text" => "Action 1"
+                //     ],
+                //     [
+                //         "type" => "message",
+                //         "label" => "Action 2",
+                //         "text" => "Action 2"
+                //     ]
+                // ]
             ]
         ]);
-        $user = $messagingApi->getProfile('U7620f077b8d1218be94d27211729be5a');
         $request = new PushMessageRequest([
             'to' => $user['userId'],
             'messages' => [$message],
