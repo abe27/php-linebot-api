@@ -229,26 +229,26 @@ class LineBotController extends Controller
                     case "400":
                         #### Call Thread #####
                         try {
+                            $txtMsg = "";
                             $result = Process::run('cd ..&&php artisan update:stock ' . $requestTxt . '');
                             if ($result->successful()) {
-                                $message = new TextMessage([
-                                    'type' => 'text',
-                                    'text' => "คุณ " . $profile->display_name . "\nขณะนี้ระบบ ทำการอัพเดทคลัง " . $requestTxt . "\nเรียบร้อยแล้ว",
-                                ]);
+                                $txtMsg = "คุณ {$profile->display_name} \nขณะนี้ระบบ ทำการอัพเดทคลัง {$requestTxt} \nเรียบร้อยแล้ว";
                             }
 
                             if ($result->failed()) {
-                                $message = new TextMessage([
-                                    'type' => 'text',
-                                    'text' => "คุณ " . $profile->display_name . "\nเกิดข้อผิดพลาขณะนี้ระบบ ทำการอัพเดทคลัง " . $requestTxt . "",
-                                ]);
+                                $txtMsg = "คุณ {$profile->display_name} \nเกิดข้อผิดพลาขณะนี้ระบบ ทำการอัพเดทคลัง {$requestTxt} ";
                             }
                             // $result->exitCode();
                             // $result->output();
                             // $result->errorOutput();
                         } catch (\Exception $e) {
                             Log::error($e->getMessage());
+                            $txtMsg = "คุณ  {$profile->display_name} \nเกิดข้อผิดพลาขณะนี้ระบบ ทำการอัพเดทคลัง {$requestTxt} .\n {$e->getMessage()}";
                         }
+                        $message = new TextMessage([
+                            'type' => 'text',
+                            'text' => $txtMsg,
+                        ]);
                         break;
                     default:
                         $isReply = false;
