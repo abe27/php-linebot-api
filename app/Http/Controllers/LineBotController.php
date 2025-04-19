@@ -238,11 +238,8 @@ class LineBotController extends Controller
                             if ($result->failed()) {
                                 $txtMsg = "คุณ {$profile->display_name} \nเกิดข้อผิดพลาขณะนี้ระบบ ทำการอัพเดทคลัง {$requestTxt} ";
                             }
-                            // $result->exitCode();
-                            // $result->output();
-                            // $result->errorOutput();
                         } catch (\Exception $e) {
-                            Log::error($e->getMessage());
+                            // Log::error($e->getMessage());
                             $txtMsg = "คุณ  {$profile->display_name} \nเกิดข้อผิดพลาขณะนี้ระบบ ทำการอัพเดทคลัง {$requestTxt} .\n {$e->getMessage()}";
                         }
                         $message = new TextMessage([
