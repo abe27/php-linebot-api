@@ -13,6 +13,7 @@ class LineGroup extends Model
 
     protected $fillable = [
         'group_id',
+        'user_id',
         'name',
         'description',
         'is_active',

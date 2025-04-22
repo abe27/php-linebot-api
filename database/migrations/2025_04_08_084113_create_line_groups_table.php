@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('line_groups', function (Blueprint $table) {
             $table->ulid('id')->primary();
-            $table->string('group_id')->unique();
+            $table->string('group_id');
+            $table->string('user_id');
             $table->string('name');
             $table->longText('description')->nullable();
             $table->boolean('is_active')->nullable()->default(true);

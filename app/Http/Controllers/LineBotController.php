@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Cutoms\UpdateStock;
 use App\Models\LineBot;
+use App\Models\LineGroup;
 use App\Models\LineUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -52,6 +53,16 @@ class LineBotController extends Controller
                 $replyToken = $event['replyToken'];
                 $message = new TextMessage(['type' => 'text', 'text' => 'สวัสดีครับคนไม่รู้จัก!']);
                 ### Create Profile User ###
+                if ($event['source']['type'] == 'group') {
+                    LineGroup::updateOrcreate([
+                        'group_id' => $event['source']['groupId'],
+                        'user_id' => $event['source']['userId']
+                    ], [
+                        'name' => '-',
+                        'description' => '-',
+                        'is_active' => true
+                    ]);
+                }
                 $userId = $messagingApi->getProfile($event['source']['userId']);
                 if ($userId) {
                     $profile = LineUser::updateOrcreate(['user_id' => $userId['userId']], [
